@@ -1,0 +1,43 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+import pandas as pd
+
+# Sample dataset of transactions (sender, receiver, amount)
+data = [
+    ('A', 'B', 10),
+    ('A', 'C', 5),
+    ('B', 'C', 2),
+    ('C', 'D', 8),
+    ('D', 'A', 1),
+    ('E', 'A', 3),
+    ('C', 'E', 4),
+    ('B', 'E', 6)
+]
+
+# Convert to a DataFrame (for easier manipulation and analysis)
+df = pd.DataFrame(data, columns=['Sender', 'Receiver', 'Amount'])
+
+# Create a directed graph using NetworkX
+G = nx.DiGraph()
+
+# Add edges to the graph from the DataFrame
+for _, row in df.iterrows():
+    G.add_edge(row['Sender'], row['Receiver'], weight=row['Amount'])
+
+# Generate the layout for nodes (for better visualization)
+pos = nx.spring_layout(G, seed=42)  # Spring layout for better spread
+
+# Draw the graph
+plt.figure(figsize=(10, 8))
+nx.draw(G, pos, with_labels=True, node_size=3000, node_color='skyblue', font_size=12, font_weight='bold', edge_color='gray')
+
+# Draw edge labels (transaction amounts)
+edge_labels = nx.get_edge_attributes(G, 'weight')
+nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+
+# Add title
+plt.title("Blockchain Transaction Patterns", fontsize=16)
+
+# Show the plot
+plt.show()
+
